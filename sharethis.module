@@ -4,6 +4,8 @@
  * A module that adds one of the ShareThis widget to your website.
  */
 
+  //require_once dirname(__FILE__) . '/theme.inc';
+
 /**
  * Implements hook_help.
  *
@@ -293,6 +295,7 @@ function sharethis_menu() {
  *   Information about the language
  */
 function sharethis_node_view($node, $view_mode, $langcode) {
+
   // Don't display if the user is currently searching, or in the RSS feed.
   switch ($view_mode) {
     case 'search_result':
@@ -302,7 +305,7 @@ function sharethis_node_view($node, $view_mode, $langcode) {
   }
   // First get all of the options for the sharethis widget from the database:
   $data_options = sharethis_get_options_array();
-  
+
   // This looks to see if the path variable has been posted by some rewrite module.
   // This is not super efficient, O(N), but N is often less than 20.
   $is_path = FALSE;
@@ -485,9 +488,18 @@ function sharethis_get_button_HTML($data_options, $mPath, $mTitle) {
  * Implements hook_block_info().
  */
 function sharethis_block_info() {
+
   $blocks['sharethis_block'] = array(
     'info' => t('ShareThis'),
+    'status' => 1,
   );
+
+  $blocks['sharethis_block_ext'] = array(
+    'info' => t('ShareThis'),
+    'status' => 1,
+    'region' => 'share',
+  );
+
   return $blocks;
 }
 
@@ -496,8 +508,10 @@ function sharethis_block_info() {
  */
 function sharethis_block_view($delta='') {
   $block = array();
+
   switch ($delta) {
     case 'sharethis_block':
+    case 'sharethis_block_ext':
       $block['content'] = sharethis_block_contents();
       break;
   }
